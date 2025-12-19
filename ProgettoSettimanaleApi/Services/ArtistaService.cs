@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProgettoSettimanaleApi.Model.DTOs;
 using ProgettoSettimanaleApi.Model.Entity;
 
 namespace ProgettoSettimanaleApi.Services
@@ -12,7 +13,9 @@ namespace ProgettoSettimanaleApi.Services
 
         public async Task<List<Artista>> GetAllArtisti()
         {
-            return await _applicationDbContext.Artisti.AsNoTracking().ToListAsync();
+            return await _applicationDbContext.Artisti.AsNoTracking()
+                .Include(a => a.Eventi)
+                .ToListAsync();
         }
 
         public async Task<Artista?> GetArtistaById(Guid id)
@@ -26,13 +29,14 @@ namespace ProgettoSettimanaleApi.Services
             return await SaveChangeAsync();
         }
 
-        public async Task<bool> DeleteArtista(Artista artista)
+        public async Task<bool> DeleteArtista(Guid id)
         {
+            var artista = await GetArtistaById(id);
             _applicationDbContext.Artisti.Remove(artista);
             return await SaveChangeAsync();
         }
 
-        public async Task<bool> UpdateArtista(Guid id, Artista artista)
+        public async Task<bool> UpdateArtista(Guid id, ArtistDto artista)
         {
             var existingArtista = await GetArtistaById(id);
             if (existingArtista == null)

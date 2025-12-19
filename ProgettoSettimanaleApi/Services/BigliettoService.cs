@@ -21,7 +21,7 @@ namespace ProgettoSettimanaleApi.Services
             return await _applicationDbContext.Biglietti.FirstOrDefaultAsync(b => b.BigliettoId == id);
         }
 
-        public async Task<List<Biglietto>> GetBigliettoByUserId(string id)
+        public async Task<List<Biglietto>> GetBigliettiByUserId(string id)
         {
             return await _applicationDbContext.Biglietti.Where(b => b.UserId == id).AsNoTracking().ToListAsync();
         }

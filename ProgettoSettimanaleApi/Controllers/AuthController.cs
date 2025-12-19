@@ -111,7 +111,11 @@ namespace ProgettoSettimanaleApi.Controllers
 
                         List<string> roles = (await _userManager.GetRolesAsync(user)).ToList();
 
-                        List<Claim> userClaims = new List<Claim>();
+                        List<Claim> userClaims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.NameIdentifier, user.Id),
+                            new Claim(ClaimTypes.Email, user.Email ?? string.Empty)
+                        };
 
                         foreach (string roleName in roles)
                         {

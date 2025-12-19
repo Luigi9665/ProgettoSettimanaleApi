@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using ProgettoSettimanaleApi.Exceptions;
 using ProgettoSettimanaleApi.Helpers;
 using ProgettoSettimanaleApi.Model.Entity;
+using ProgettoSettimanaleApi.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -61,6 +62,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(option =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager<SignInManager<ApplicationUser>>();
+
+
+builder.Services.AddScoped<ArtistaService>();
+builder.Services.AddScoped<EventoService>();
+builder.Services.AddScoped<BigliettoService>();
 
 
 builder.Services.AddAuthorization();
