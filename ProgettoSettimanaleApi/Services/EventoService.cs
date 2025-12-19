@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProgettoSettimanaleApi.Model.DTOs;
 using ProgettoSettimanaleApi.Model.Entity;
 
 namespace ProgettoSettimanaleApi.Services
@@ -10,9 +11,29 @@ namespace ProgettoSettimanaleApi.Services
         {
         }
 
-        public async Task<List<Evento>> GetAllEventi()
+        public async Task<List<EventListDto>> GetAllEventi()
         {
-            return await _applicationDbContext.Eventi.AsNoTracking().ToListAsync();
+            return await _applicationDbContext.Eventi.AsNoTracking()
+                .Include(e => e.Artista)
+                .Include(e => e.Biglietti)
+                .Select(e => new EventListDto
+                {
+                    EventoId = e.EventoId,
+                    Titolo = e.Titolo,
+                    Data = e.Data,
+                    Luogo = e.Luogo,
+                    Artista = new ArtistDto
+                    {
+                        Nome = e.Artista.Nome,
+                        Genere = e.Artista.Genere,
+                        Biografia = e.Artista.Biografia
+                    },
+                    Biglietti = e.Biglietti.Select(b => new BigliettoDto
+                    {
+                        EventoId = b.EventoId
+                    }).ToList()
+                })
+                .ToListAsync();
         }
 
         public async Task<Evento?> GetEventoById(Guid id)
