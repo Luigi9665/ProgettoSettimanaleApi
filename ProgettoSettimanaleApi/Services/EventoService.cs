@@ -28,9 +28,10 @@ namespace ProgettoSettimanaleApi.Services
                         Genere = e.Artista.Genere,
                         Biografia = e.Artista.Biografia
                     },
-                    Biglietti = e.Biglietti.Select(b => new BigliettoDto
+                    Biglietti = e.Biglietti.Select(b => new BigliettiEventoDto
                     {
-                        EventoId = b.EventoId
+                        EventoId = b.EventoId,
+                        UserId = b.UserId
                     }).ToList()
                 })
                 .ToListAsync();
@@ -39,6 +40,31 @@ namespace ProgettoSettimanaleApi.Services
         public async Task<Evento?> GetEventoById(Guid id)
         {
             return await _applicationDbContext.Eventi.FirstOrDefaultAsync(e => e.EventoId == id);
+        }
+
+        public async Task<EventListDto> GetEventoByIdResponse(Guid id)
+        {
+            return await _applicationDbContext.Eventi
+                .Where(e => e.EventoId == id)
+                .Select(e => new EventListDto
+                {
+                    EventoId = e.EventoId,
+                    Titolo = e.Titolo,
+                    Data = e.Data,
+                    Luogo = e.Luogo,
+                    Artista = new ArtistDto
+                    {
+                        Nome = e.Artista.Nome,
+                        Genere = e.Artista.Genere,
+                        Biografia = e.Artista.Biografia
+                    },
+                    Biglietti = e.Biglietti.Select(b => new BigliettiEventoDto
+                    {
+                        EventoId = b.EventoId,
+                        UserId = b.UserId
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> AddEvento(Evento evento)

@@ -9,7 +9,7 @@ namespace ProgettoSettimanaleApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "SuperAdmin")]
+
     public class EventoController : ControllerBase
     {
 
@@ -22,6 +22,7 @@ namespace ProgettoSettimanaleApi.Controllers
         }
 
         [HttpGet("AllEventi")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> GetAllEventi()
         {
             try
@@ -36,11 +37,12 @@ namespace ProgettoSettimanaleApi.Controllers
 
 
         [HttpGet("EventoById/{id}")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> GetEventoById(Guid id)
         {
             try
             {
-                var evento = await _eventoService.GetEventoById(id);
+                var evento = await _eventoService.GetEventoByIdResponse(id);
                 if (evento == null)
                 {
                     return NotFound();
@@ -56,6 +58,7 @@ namespace ProgettoSettimanaleApi.Controllers
 
 
         [HttpPost("CreateEvento")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> CreateEvento(EventoDto eventoDto)
         {
             if (!ModelState.IsValid)
@@ -88,6 +91,7 @@ namespace ProgettoSettimanaleApi.Controllers
         }
 
         [HttpPut("UpdateEvento/{id}")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> UpdateEvento(Guid id, EventoDto eventoDto)
         {
             if (!ModelState.IsValid)
@@ -120,6 +124,7 @@ namespace ProgettoSettimanaleApi.Controllers
         }
 
         [HttpDelete("DeleteEvento/{id}")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> DeleteEvento(Guid id)
         {
             try

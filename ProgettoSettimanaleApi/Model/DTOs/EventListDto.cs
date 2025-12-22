@@ -8,6 +8,6 @@
         public string Luogo { get; set; }
 
         public ArtistDto Artista { get; set; } = null!;
-        public List<BigliettoDto> Biglietti { get; set; } = new();
+        public List<BigliettiEventoDto> Biglietti { get; set; } = new();
     }
 }

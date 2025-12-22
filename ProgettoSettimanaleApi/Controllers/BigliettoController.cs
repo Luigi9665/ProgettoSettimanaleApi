@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProgettoSettimanaleApi.Model.DTOs.Responses;
 using ProgettoSettimanaleApi.Model.Entity;
 using ProgettoSettimanaleApi.Services;
 using System.Security.Claims;
@@ -39,6 +40,7 @@ namespace ProgettoSettimanaleApi.Controllers
         {
             // Prendo l'ID dell'utente dal token
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
             Console.WriteLine("UserId: " + userId);
 
             if (userId == null)
@@ -46,7 +48,7 @@ namespace ProgettoSettimanaleApi.Controllers
                 return Unauthorized();
             }
 
-            var biglietti = await _bigliettoService.GetBigliettiByUserId(userId);
+            var biglietti = await _bigliettoService.GetBigliettiByUserId(userId, userEmail);
 
             if (biglietti == null)
             {
@@ -71,7 +73,7 @@ namespace ProgettoSettimanaleApi.Controllers
             {
                 // Prendo l'ID dell'utente dal token
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                Console.WriteLine("UserId: " + userId);
+                var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
                 if (userId == null)
                     return Unauthorized();
@@ -84,9 +86,11 @@ namespace ProgettoSettimanaleApi.Controllers
                     UserId = userId,
                 };
 
+                var bigliettoRepsonse = _bigliettoService.GetBigliettoResponse(biglietto, userId, userEmail);
+
                 if (await _bigliettoService.AddBiglietto(biglietto))
                 {
-                    return Ok(biglietto);
+                    return Ok(bigliettoRepsonse);
                 }
                 else
                 {

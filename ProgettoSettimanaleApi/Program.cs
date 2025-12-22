@@ -57,7 +57,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(option =>
     option.Password.RequireUppercase = true;
     option.Password.RequireLowercase = true;
     option.Password.RequireNonAlphanumeric = false;
-
+    option.User.RequireUniqueEmail = true;
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -69,7 +69,11 @@ builder.Services.AddScoped<EventoService>();
 builder.Services.AddScoped<BigliettoService>();
 
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("RequireAdminRole", policy => policy.RequireRole("SuperAdmin"));
+    option.AddPolicy("AdminOrUser", policy => policy.RequireRole("SuperAdmin", "User"));
+});
 
 
 

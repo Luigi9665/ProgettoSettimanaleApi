@@ -89,19 +89,6 @@ namespace ProgettoSettimanaleApi.Controllers
 
                     if (user is not null)
                     {
-
-                        //Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(
-                        //    user,
-                        //    loginRequest.Password,
-                        //    isPersistent: false,
-                        //    lockoutOnFailure: false
-                        //    );
-
-                        //if (!result.Succeeded)
-                        //{
-                        //    return BadRequest();
-                        //}
-
                         bool passwordValid = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
 
                         if (!passwordValid)
